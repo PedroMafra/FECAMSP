@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "81913042520",
+    "project_id": "fecamsp-a8469",
+    "storage_bucket": "fecamsp-a8469.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:81913042520:android:af386b962c8bdc31d45c2d",
+        "android_client_info": {
+          "package_name": "com.example.flutter_projetopedromafra"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtjGcQ3gxO39po0kz9Qzm5FEw_cqiVXBM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
