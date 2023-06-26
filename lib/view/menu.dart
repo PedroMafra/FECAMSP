@@ -53,7 +53,6 @@ class _MenuViewState extends State<MenuView> {
   double destLat = 0.0;
   double destLon = 0.0;
 
-  bool box1 = false;
   bool box2 = false;
 
   var pageIndex = 0;
@@ -197,6 +196,10 @@ class _MenuViewState extends State<MenuView> {
           //TextField Origem
           TextField(
             controller: origem,
+            onTap: () {
+              //Vai para o Mapa
+              abremapa(destino);
+            },
             decoration: InputDecoration(
               labelText: 'Origem',
               labelStyle: TextStyle(fontSize: 20),
@@ -220,6 +223,10 @@ class _MenuViewState extends State<MenuView> {
           //TextField Destino
           TextField(
             controller: destino,
+            onTap: () {
+              //Vai para o Mapa
+              abremapa(destino);
+            },
             decoration: InputDecoration(
               labelText: 'Destino',
               labelStyle: TextStyle(fontSize: 20),
@@ -247,7 +254,7 @@ class _MenuViewState extends State<MenuView> {
           TextField(
             controller: distancia,
             decoration: InputDecoration(
-              labelText: 'Distância',
+              labelText: 'Distância em km',
               labelStyle: TextStyle(fontSize: 20),
               prefixIcon: Icon(Icons.route),
               border: OutlineInputBorder(),
@@ -373,33 +380,16 @@ class _MenuViewState extends State<MenuView> {
           //Ida e Volta
           Row(
             children: [
+              //Retorno Vazio
               Checkbox(
-                value: box1,
-                onChanged: (value) {
+                value: box2,
+                onChanged: (bool? value) {
                   setState(() {
-                    box1 = value!;
-                    if (!box1) {
-                      box2 = false;
-                    }
+                    box2 = value!;
                   });
                 },
                 activeColor: Colors.blue.shade900,
                 checkColor: Colors.white,
-              ),
-              Text('Ida e Volta'),
-              //Retorno Vazio
-              Checkbox(
-                value: box2,
-                onChanged: box1
-                    ? (value) {
-                        setState(() {
-                          box2 = value!;
-                        });
-                      }
-                    : null,
-                activeColor: Colors.blue.shade900,
-                checkColor: Colors.white,
-                tristate: !box1,
               ),
               Text('Retorno Vazio'),
             ],
@@ -416,7 +406,8 @@ class _MenuViewState extends State<MenuView> {
               if (cc != 0 && ccd != 0) {
                 double dist = double.parse(distancia.text);
                 if (box2 == true) {
-                  double freteFinal = ((dist * ccd) + cc) + (0.92 * dist * ccd);
+                  double retornoVazio = (0.92 * dist * ccd);
+                  double freteFinal = ((dist * ccd) + cc) + retornoVazio;
                   var f = Frete(
                       origem.text,
                       destino.text,
@@ -424,28 +415,100 @@ class _MenuViewState extends State<MenuView> {
                       dropdownValueFrete,
                       dropdownValueCarga,
                       dropdownValueEixo,
-                      box1,
                       box2,
                       LoginController().idUsuario(),
-                      freteFinal.toString());
+                      freteFinal.toStringAsFixed(2));
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: Text('Piso Minimo de Frete Cálculado: '),
-                          content: Column(
-                            children: [
-                              Text('Distância: ${distancia.text} Km'),
-                              Text(
-                                  'Coeficiente de Custo de Deslocamento (CCD): $ccd'),
-                              Text(
-                                  'Coeficiente de Custo de Carga e Descarga (CC): $cc'),
-                              Text(
-                                  'Valor de Ida (Distância X CCD) + CC: ${(dist * ccd) + cc}'),
-                              //Text('Valor de Retorno Vazio (0.92 X Distância X CCD): ${0.92*dist*ccd}'),
-                              Text('Valor do Frete: $freteFinal'),
-                            ],
+                          content: SingleChildScrollView(
+                            child: IntrinsicHeight(
+                              child: Column(
+                                children: [
+                                  RichText(
+                                    text: TextSpan(
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: "Resultados\n",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: "Distância: ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: "${distancia.text} km\n",
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "Coeficiente de Custo de Deslocamento (CCD): ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: "$ccd\n",
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "Coeficiente de Custo de Carga e Descarga (CC): ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: "$cc\n",
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "Valor de Ida (Distância X CCD) + CC: ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: "${(dist * ccd) + cc}\n",
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "Valor do Retorno Vazio (0.92 x Distancia x CCD): ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "${retornoVazio.toStringAsFixed(2)}\n",
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "Valor do Piso Mínimo do Frete: ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "R\$ ${freteFinal.toStringAsFixed(2)}\n",
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
+                          actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 10),
                           actions: [
                             TextButton(
                               onPressed: () {
@@ -472,29 +535,89 @@ class _MenuViewState extends State<MenuView> {
                       dropdownValueFrete,
                       dropdownValueCarga,
                       dropdownValueEixo,
-                      box1,
                       box2,
                       LoginController().idUsuario(),
-                      freteFinal.toString());
+                      freteFinal.toStringAsFixed(2));
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: Text('Piso Minimo de Frete Cálculado: '),
-                          content: Column(
-                            children: [
-                              Text('Distância: ${distancia.text} Km'),
-                              Text(
-                                  'Coeficiente de Custo de Deslocamento (CCD): $ccd'),
-                              Text(
-                                  'Coeficiente de Custo de Carga e Descarga (CC): $cc'),
-                              Text(
-                                  'Valor de Ida (Distância X CCD) + CC: ${(dist * ccd) + cc}'),
-                              Text(
-                                  'Valor de Retorno Vazio (0.92 X Distância X CCD): ${0.92 * dist * ccd}'),
-                              Text('Valor do Frete: $freteFinal'),
-                            ],
+                          content: SingleChildScrollView(
+                            child: IntrinsicHeight(
+                              child: Column(
+                                children: [
+                                  RichText(
+                                    text: TextSpan(
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: "Resultados\n",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: "Distância: ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: "${distancia.text} km\n",
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "Coeficiente de Custo de Deslocamento (CCD): ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: "$ccd\n",
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "Coeficiente de Custo de Carga e Descarga (CC): ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: "$cc\n",
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "Valor de Ida (Distância X CCD) + CC: ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: "${(dist * ccd) + cc}\n",
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "Valor do Piso Mínimo do Frete: ",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              "R\$ ${freteFinal.toStringAsFixed(2)}\n",
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
+                          actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 10),
                           actions: [
                             TextButton(
                               onPressed: () {
@@ -549,31 +672,40 @@ class _MenuViewState extends State<MenuView> {
                 itemBuilder: (context, index) {
                   String id = dados.docs[index].id;
                   dynamic item = dados.docs[index].data();
-                  if (item['Origem'] == null || item['Destino'] == null) {
+                  if (item['origem'] == null ||
+                      item['origem'] == "" ||
+                      item['destino'] == null ||
+                      item['destino'] == "") {
+                    double cust = double.parse(item['custo']);
+
                     return Card(
                       child: ListTile(
                         leading: Icon(Icons.map),
                         title: Text('Frete calculado com Distancia: '),
                         subtitle: Text(
-                            'Distancia: ${item['distancia']} Km, Custo: R\$ ${item['custo']}'),
+                            'Distancia: ${item['distancia']} Km, Custo: R\$ ${cust.toStringAsFixed(2)}'),
                         onTap: () {
                           descricao(context, item);
                         },
                         onLongPress: () {
                           // Transferir para o formulário
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
+                          distancia.text = item['distancia'];
+                          eixos.text = item['eixos'];
+                          origem.text = "";
+                          destino.text = "";
+                          atualizaDropdownEixo(item['eixos']);
+                          atualizaDropdownFrete(item['frete']);
+                          atualizaDropdownCarga(item['carga']);
+                          if (item['retVazio'] == true) {
+                            box2 = true;
+                          } else {
+                            box2 = false;
+                          }
+                          pageController.animateToPage(
+                            0,
+                            duration: Duration(milliseconds: 200),
+                            curve: Curves.easeIn,
+                          );
                           //Transferencia
                         },
                         trailing: IconButton(
@@ -585,29 +717,30 @@ class _MenuViewState extends State<MenuView> {
                       ),
                     );
                   } else {
+                    double cust = double.parse(item['custo']);
                     return Card(
                       child: ListTile(
                         leading: Icon(Icons.map),
-                        title: Text('${item['Origem']} - ${item['Destino']}'),
+                        title: Text('${item['origem']} - ${item['destino']}'),
                         subtitle: Text(
-                            'Distancia: ${item['distancia']} Km, Custo: R\$ ${item['custo']}'),
+                            'Distancia: ${item['distancia']} Km, Custo: R\$ ${cust.toStringAsFixed(2)}'),
                         onTap: () {
                           descricao(context, item);
                         },
                         onLongPress: () {
                           // Transferir para o formulário
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+                          distancia.text = item['distancia'];
+                          eixos.text = item['eixos'];
+                          origem.text = item['origem'];
+                          destino.text = item['destino'];
+                          dropdownValueEixo = item['eixos'];
+                          dropdownValueCarga = item['carga'];
+                          dropdownValueFrete = item['frete'];
+                          if (item['retVazio'] == true) {
+                            box2 = true;
+                          } else {
+                            box2 = false;
+                          }
 
                           //Transferencia
                         },
@@ -633,39 +766,214 @@ class _MenuViewState extends State<MenuView> {
   }
 
   void descricao(context, item) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // retorna um objeto do tipo Dialog
-        return AlertDialog(
-          title: Text("Visualizador de Frete"),
-          content: SizedBox(
-            height: 250,
-            width: 300,
-            child: Column(
-              children: [
-                Text("${item['origem']} - ${item['destino']}"),
-                Text(
-                    "Distancia: ${item['distancia']} km - Custo: R\$ ${item['custo']}"),
-                Text(
-                    "Nr. de Eixos: ${item['eixos']} - Tipo de Frete: ${item['frete']} - Tipo de Carga: ${item['carga']}"),
-                Text(
-                    "Ida e Volta: ${item['idaVolta']} - Volta Vazia: ${item['retVazio']}"),
-              ],
+    String vvz;
+    if (item['retVazio'] == true) {
+      vvz = "Sim";
+    } else {
+      vvz = "Não";
+    }
+    double cust;
+    cust = double.parse(item['custo']);
+    if (item['origem'] == null ||
+        item['origem'] == "" ||
+        item['destino'] == null ||
+        item['destino'] == "") {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // retorna um objeto do tipo Dialog
+          return AlertDialog(
+            title: Text("Detalhamento do Frete"),
+            content: IntrinsicHeight(
+              child: Column(
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: [
+                        TextSpan(
+                          text: "Frete Cálculado com distância\n",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "Distância: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "${item['distancia']} km\n",
+                        ),
+                        TextSpan(
+                          text: "Custo: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "R\$ ${cust.toStringAsFixed(2)}\n",
+                        ),
+                        TextSpan(
+                          text: "Nr. de Eixos: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "${item['eixos']}\n",
+                        ),
+                        TextSpan(
+                          text: "Tipo de Frete: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "${item['frete']}\n",
+                        ),
+                        TextSpan(
+                          text: "Tipo de Carga: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "${item['carga']}\n",
+                        ),
+                        TextSpan(
+                          text: "Retorno Vazio: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "${vvz}",
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 10),
-          actions: [
-            TextButton(
-              child: Text("Fechar"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+            actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+            actions: [
+              TextButton(
+                child: Text("Fechar"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // retorna um objeto do tipo Dialog
+          return AlertDialog(
+            title: Text("Detalhamento do Frete"),
+            content: IntrinsicHeight(
+              child: Column(
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: [
+                        TextSpan(
+                          text: "Origem: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "${item['origem']}\n",
+                        ),
+                        TextSpan(
+                          text: "Destino: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "${item['destino']}\n\n",
+                        ),
+                        TextSpan(
+                          text: "Distância: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "${item['distancia']} km\n",
+                        ),
+                        TextSpan(
+                          text: "Custo: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "R\$ ${cust.toStringAsFixed(2)}\n",
+                        ),
+                        TextSpan(
+                          text: "Nr. de Eixos: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "${item['eixos']}\n",
+                        ),
+                        TextSpan(
+                          text: "Tipo de Frete: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "${item['frete']}\n",
+                        ),
+                        TextSpan(
+                          text: "Tipo de Carga: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "${item['carga']}\n",
+                        ),
+                        TextSpan(
+                          text: "Retorno Vazio: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "${vvz}",
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        );
-      },
-    );
+            actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+            actions: [
+              TextButton(
+                child: Text("Fechar"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   void abremapa(controlador) async {
@@ -714,6 +1022,24 @@ class _MenuViewState extends State<MenuView> {
         });
       }
     }
+  }
+
+  void atualizaDropdownEixo(String newValue) {
+    setState(() {
+      dropdownValueEixo = newValue;
+    });
+  }
+
+  void atualizaDropdownFrete(String newValue) {
+    setState(() {
+      dropdownValueFrete = newValue;
+    });
+  }
+
+  void atualizaDropdownCarga(String newValue) {
+    setState(() {
+      dropdownValueCarga = newValue;
+    });
   }
 
   Future<double> calcDistanciaCoord() async {

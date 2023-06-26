@@ -30,30 +30,9 @@ class _LoginViewState extends State<LoginView> {
       body: Column(
         children: [
           Expanded(
-            flex: 9,
+            flex: 8,
             child: campos(context),
           ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              padding: EdgeInsets.all(20),
-              child: TextButton(
-                onPressed: () {
-                  //Ir para recuperação de Senhas
-                  Navigator.pushNamed(
-                    context,
-                    'recuperar',
-                  );
-                },
-                child: Text('Esqueceu sua Senha?'),
-                style: ElevatedButton.styleFrom(
-                  textStyle:
-                      TextStyle(color: Colors.blue.shade900, fontSize: 20),
-                  //minimumSize: Size(200, 50),
-                ),
-              ),
-            ),
-          )
         ],
       ),
       persistentFooterButtons: [
@@ -78,12 +57,11 @@ class _LoginViewState extends State<LoginView> {
   campos(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(15),
         child: Column(
           children: [
             //Logotipo
-            Image.asset('lib/images/logofecam.png', scale: 2),
-            SizedBox(height: 30),
+            Image.asset('lib/images/logofecam.png', scale: 5),
             //TextField EMAIL
             TextField(
               controller: usuEmail,
@@ -107,7 +85,7 @@ class _LoginViewState extends State<LoginView> {
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 40),
+            SizedBox(height: 30),
 
             //Confirma Button
             ElevatedButton(
@@ -123,7 +101,7 @@ class _LoginViewState extends State<LoginView> {
                 minimumSize: Size(200, 50),
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 8),
             //Cadastrar
             ElevatedButton(
               onPressed: () {
@@ -136,6 +114,22 @@ class _LoginViewState extends State<LoginView> {
               //Conteudo
               child: Text('Cadastrar', style: TextStyle(fontSize: 24)),
               //ButtonStyle
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue.shade900,
+                minimumSize: Size(200, 50),
+              ),
+            ),
+            SizedBox(height: 8),
+            //Recuperar Senha
+            ElevatedButton(
+              onPressed: () {
+                //Ir para recuperação de Senhas
+                Navigator.pushNamed(
+                  context,
+                  'recuperar',
+                );
+              },
+              child: Text('Recuperar Senha', style: TextStyle(fontSize: 22)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue.shade900,
                 minimumSize: Size(200, 50),

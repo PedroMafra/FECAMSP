@@ -5,13 +5,12 @@ class Frete {
   final String frete;
   final String carga;
   final String eixos;
-  final bool idaVolta;
   final bool retVazio;
   final String usuId;
   final String custo;
 
   Frete(this.origem, this.destino, this.distancia, this.frete,
-      this.carga, this.eixos, this.idaVolta, this.retVazio, this.usuId, this.custo);
+      this.carga, this.eixos, this.retVazio, this.usuId, this.custo);
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -22,7 +21,6 @@ class Frete {
       'frete': frete,
       'carga': carga,
       'eixos': eixos,
-      'idaVolta': idaVolta,
       'retVazio': retVazio,
       'custo': custo,
     };
@@ -37,7 +35,6 @@ class Frete {
       json['frete'],
       json['carga'],
       json['eixos'],
-      json['idaVolta'],
       json['retVazio'],
       json['custo'],
     );

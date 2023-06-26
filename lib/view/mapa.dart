@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mapbox_gl/mapbox_gl.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter_mapbox_autocomplete/flutter_mapbox_autocomplete.dart';
 import 'util.dart';
 
 class MapaView extends StatefulWidget {
@@ -59,30 +58,6 @@ class _MapaViewState extends State<MapaView> {
     }
   }
 
-  // MapBoxAutoCompleteWidget buildSearchAutocomplete(BuildContext context) {
-  //   return MapBoxAutoCompleteWidget(
-  //     apiKey:
-  //         "pk.eyJ1IjoicGVkcm9oZW5yaW03IiwiYSI6ImNsaXJ0Y3VzNzEwamszZW53ZTJkaDFoMWgifQ.GVNn71BmIfYqqPFiZA3cSw",
-  //     hint: "Pesquisar Local",
-  //     language: "pt",
-  //     limit: 4,
-  //     onSelect: (place) {
-  //       try {
-  //         if (place != null &&
-  //             place.geometry != null &&
-  //             place.geometry!.coordinates != null) {
-  //           double newLat = place.geometry!.coordinates![1];
-  //           double newLon = place.geometry!.coordinates![0];
-  //           mapController
-  //               .animateCamera(CameraUpdate.newLatLng(LatLng(newLat, newLon)));
-  //         }
-  //       } catch (e) {
-  //         mensagem("Erro: $e");
-  //       }
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,13 +69,6 @@ class _MapaViewState extends State<MapaView> {
       body: Stack(
         children: [
           buildMapa(context),
-          // buildSearchAutocomplete(context),
-          //Positioned(
-          //  top: 20,
-          //  left: 20,
-          //  right: 20,
-          //  child: buildSearchAutocomplete(context),
-          //),
         ],
       ),
       floatingActionButton: FloatingActionButton(
