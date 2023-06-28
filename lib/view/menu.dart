@@ -1044,7 +1044,7 @@ class _MenuViewState extends State<MenuView> {
 
   Future<double> calcDistanciaCoord() async {
     String apiKey =
-        "pk.eyJ1IjoicGVkcm9oZW5yaW03IiwiYSI6ImNsaXJ0Y3VzNzEwamszZW53ZTJkaDFoMWgifQ.GVNn71BmIfYqqPFiZA3cSw";
+        "SUACHAVEAPI";
     String apiUrl =
         "https://api.mapbox.com/directions/v5/mapbox/driving/$origLon,$origLat;$destLon,$destLat?access_token=$apiKey";
 
