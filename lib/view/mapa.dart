@@ -43,7 +43,7 @@ class _MapaViewState extends State<MapaView> {
     if (lat != 0 && lon != 0) {
       return MapboxMap(
         accessToken:
-            "pk.eyJ1IjoicGVkcm9oZW5yaW03IiwiYSI6ImNsaXJ0Y3VzNzEwamszZW53ZTJkaDFoMWgifQ.GVNn71BmIfYqqPFiZA3cSw",
+            "TOKENDEACESSO",
         styleString: MapboxStyles.MAPBOX_STREETS,
         onMapCreated: mapaCriado,
         initialCameraPosition: CameraPosition(
